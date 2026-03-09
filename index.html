@@ -111,7 +111,7 @@
 </div>
 
 <script>
-  // ⚠️ ВСТАВЬ СЮДА СВОЙ URL ИЗ APPS SCRIPT
+  // ⚠️ ЗДЕСЬ ВСТАВЬ СВОЙ URL ИЗ APPS SCRIPT
   const API_URL = 'https://script.google.com/macros/s/AKfycbyXylzVH9IBSQ_A4MzZb1-ZITSN_PpxRam1E6ncXmPymdje1LXwjq1dK1XuOjgKWSx9/exec';
 
   const tg = window.Telegram.WebApp;
@@ -141,7 +141,6 @@
     return String(raw);
   }
 
-  // Всегда считаем по дате — игнорируем статичное значение из таблицы
   function getDaysLeft(item) {
     if (!item.expiry) return null;
     const d = new Date(item.expiry);
@@ -216,30 +215,36 @@
       `⚠️ Истекает` + (expCount ? `<span class="counter">${expCount}</span>` : '');
   }
 
+  // Добавление через GET — без POST, чтобы не ловить CORS
   async function addItem() {
     const name      = document.getElementById('inp-name').value.trim();
     const expiryRaw = document.getElementById('inp-expiry').value;
     if (!name) { tg.showAlert('⚠️ Введи название продукта'); return; }
+
     let expiry = '';
     if (expiryRaw) {
-      expiry = new Date(expiryRaw).toLocaleDateString('ru-RU');
+      expiry = new Date(expiryRaw).toLocaleDateString('ru-RU'); // dd.MM.yyyy
     }
+
+    const url = new URL(API_URL);
+    url.searchParams.set('action', 'add');
+    url.searchParams.set('name', name);
+    if (expiry) url.searchParams.set('expiry', expiry);
+
     showStatus('Добавляю...');
     try {
-      await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'add', name, expiry })
-      });
+      await fetch(url.toString());
       document.getElementById('inp-name').value   = '';
       document.getElementById('inp-expiry').value = '';
       showStatus('✅ ' + name + ' добавлен!');
       await loadItems();
       showTab('list');
-    } catch(err) { tg.showAlert('❌ Ошибка при добавлении'); }
+    } catch(err) {
+      tg.showAlert('❌ Ошибка при добавлении');
+    }
   }
 
-  // Удаление через GET — решает проблему с CORS
+  // Удаление через GET
   function confirmDelete(rowNum, name) {
     tg.showConfirm(`Удалить «${name}» из холодильника?`, async (ok) => {
       if (!ok) return;
