@@ -138,18 +138,16 @@
     if (!raw) return '';
     const d = new Date(raw);
     if (!isNaN(d)) return d.toLocaleDateString('ru-RU');
-    return raw;
+    return String(raw);
   }
 
+  // Всегда считаем по дате — игнорируем статичное значение из таблицы
   function getDaysLeft(item) {
-    if (item.daysLeft !== '' && item.daysLeft !== null && !isNaN(item.daysLeft)) {
-      return parseInt(item.daysLeft);
-    }
     if (!item.expiry) return null;
-    const exp = new Date(item.expiry);
-    if (isNaN(exp)) return null;
+    const d = new Date(item.expiry);
+    if (isNaN(d)) return null;
     const now = new Date(); now.setHours(0,0,0,0);
-    return Math.ceil((exp - now) / 86400000);
+    return Math.ceil((d - now) / 86400000);
   }
 
   function expiryBadge(item) {
@@ -165,11 +163,10 @@
     const nameSafe  = item.name.replace(/'/g, "\\'");
     const addedFmt  = formatDate(item.added);
     const expiryFmt = formatDate(item.expiry);
-    const doneStyle = item.status === 'done' ? 'opacity:0.5;text-decoration:line-through' : '';
     return `
       <div class="card">
         <div class="card-left">
-          <div class="card-name" style="${doneStyle}">${item.name}</div>
+          <div class="card-name">${item.name}</div>
           <div class="card-sub">
             Добавлено: ${addedFmt}
             ${expiryFmt ? ' · Годен до: ' + expiryFmt : ''}
@@ -200,7 +197,7 @@
     const el  = document.getElementById('expire-list');
     const exp = allItems.filter(i => { const d = getDaysLeft(i); return d !== null && d <= 3; });
     if (!exp.length) {
-      el.innerHTML = '<div class="empty">✅ Все продукты свежие!<br><br>Здесь появятся продукты,<br>у которых срок годности<br>меньше 3 дней</div>';
+      el.innerHTML = '<div class="empty">✅ Все продукты свежие!<br><br>Здесь появятся продукты<br>у которых срок годности<br>меньше 3 дней</div>';
       return;
     }
     el.innerHTML =
@@ -209,7 +206,10 @@
   }
 
   function updateTabBadges() {
-    const expCount = allItems.filter(i => { const d = getDaysLeft(i); return d !== null && d <= 3; }).length;
+    const expCount = allItems.filter(i => {
+      const d = getDaysLeft(i);
+      return d !== null && d <= 3;
+    }).length;
     document.getElementById('tab-btn-list').innerHTML =
       `📋 Список<span class="counter">${allItems.length}</span>`;
     document.getElementById('tab-btn-expire').innerHTML =
@@ -222,8 +222,7 @@
     if (!name) { tg.showAlert('⚠️ Введи название продукта'); return; }
     let expiry = '';
     if (expiryRaw) {
-      const d = new Date(expiryRaw);
-      expiry = d.toLocaleDateString('ru-RU');
+      expiry = new Date(expiryRaw).toLocaleDateString('ru-RU');
     }
     showStatus('Добавляю...');
     try {
@@ -240,16 +239,13 @@
     } catch(err) { tg.showAlert('❌ Ошибка при добавлении'); }
   }
 
+  // Удаление через GET — решает проблему с CORS
   function confirmDelete(rowNum, name) {
     tg.showConfirm(`Удалить «${name}» из холодильника?`, async (ok) => {
       if (!ok) return;
       showStatus('Удаляю...');
       try {
-        await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'delete', rowNum })
-        });
+        await fetch(`${API_URL}?action=delete&rowNum=${rowNum}`);
         showStatus('🗑️ ' + name + ' удалён');
         await loadItems();
       } catch(err) { tg.showAlert('❌ Ошибка при удалении'); }
