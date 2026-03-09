@@ -1,298 +1,279 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="ru">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2685.4">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-    p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px 'Helvetica Neue'}
-    span.s1 {font: 12.0px Helvetica}
-    span.s2 {font: 13.0px 'Helvetica Neue'}
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🧊 Мой холодильник</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--tg-theme-bg-color, #ffffff);
+      color: var(--tg-theme-text-color, #000000);
+      padding: 12px;
+      min-height: 100vh;
+    }
+    h1 { font-size: 20px; margin-bottom: 14px; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+    .tab {
+      flex: 1; padding: 9px 4px; border: none; border-radius: 10px;
+      background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+      color: var(--tg-theme-text-color, #000);
+      cursor: pointer; font-size: 12px; font-weight: 500;
+    }
+    .tab.active {
+      background: var(--tg-theme-button-color, #2481cc);
+      color: var(--tg-theme-button-text-color, #fff);
+    }
+    .card {
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--tg-theme-secondary-bg-color, #f8f8f8);
+      border-radius: 14px; padding: 13px; margin-bottom: 10px;
+    }
+    .card-left { flex: 1; }
+    .card-name { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+    .card-sub  { font-size: 12px; color: gray; margin-bottom: 5px; }
+    .badge {
+      display: inline-block; padding: 3px 9px;
+      border-radius: 20px; font-size: 11px; font-weight: 600;
+    }
+    .badge-ok     { background: #e8f5e9; color: #2e7d32; }
+    .badge-warn   { background: #fff3e0; color: #e65100; }
+    .badge-danger { background: #fce4ec; color: #c62828; }
+    .del-btn {
+      background: none; border: none;
+      font-size: 22px; cursor: pointer; padding: 4px; opacity: 0.7;
+    }
+    .del-btn:active { opacity: 1; }
+    .form { display: flex; flex-direction: column; gap: 10px; }
+    label { font-size: 13px; color: gray; }
+    input {
+      padding: 11px; border-radius: 10px;
+      border: 1.5px solid var(--tg-theme-hint-color, #ddd);
+      font-size: 14px; width: 100%;
+      background: var(--tg-theme-secondary-bg-color, #f8f8f8);
+      color: var(--tg-theme-text-color, #000);
+      outline: none;
+    }
+    input:focus { border-color: var(--tg-theme-button-color, #2481cc); }
+    .btn-add {
+      padding: 13px; border: none; border-radius: 13px; width: 100%;
+      background: var(--tg-theme-button-color, #2481cc);
+      color: var(--tg-theme-button-text-color, #fff);
+      font-size: 15px; font-weight: 600; cursor: pointer;
+    }
+    .btn-add:active { opacity: 0.85; }
+    #status {
+      text-align: center; font-size: 13px; height: 22px;
+      color: var(--tg-theme-button-color, #2481cc);
+      margin-bottom: 6px; transition: opacity 0.3s;
+    }
+    .counter {
+      display: inline-block;
+      background: var(--tg-theme-button-color, #2481cc);
+      color: #fff; border-radius: 20px;
+      padding: 0 6px; font-size: 11px; margin-left: 4px;
+    }
+    .tab.active .counter { background: rgba(255,255,255,0.35); color: #fff; }
+    .section-title { font-size: 12px; color: gray; margin-bottom: 8px; padding-left: 2px; }
+    .empty { text-align: center; color: gray; padding: 40px 20px; font-size: 14px; line-height: 2; }
   </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="ru"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8"/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;🧊 Мой холодильник&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://telegram.org/js/telegram-web-app.js"&gt;&lt;/script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>* { box-sizing: border-box; margin: 0; padding: 0; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>body {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: var(--tg-theme-bg-color, #ffffff);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: var(--tg-theme-text-color, #000000);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: 12px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>min-height: 100vh;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>h1 { font-size: 20px; margin-bottom: 14px; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.tabs { display: flex; gap: 8px; margin-bottom: 14px; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.tab {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>flex: 1; padding: 9px 4px; border: none; border-radius: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: var(--tg-theme-secondary-bg-color, #f0f0f0);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: var(--tg-theme-text-color, #000);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer; font-size: 12px; font-weight: 500;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.tab.active {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: var(--tg-theme-button-color, #2481cc);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: var(--tg-theme-button-text-color, #fff);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.card {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: flex; justify-content: space-between; align-items: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: var(--tg-theme-secondary-bg-color, #f8f8f8);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 14px; padding: 13px; margin-bottom: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.card-left { flex: 1; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.card-name { font-weight: 600; font-size: 15px; margin-bottom: 4px; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.card-sub<span class="Apple-converted-space">  </span>{ font-size: 12px; color: gray; margin-bottom: 5px; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.badge {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: inline-block; padding: 3px 9px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 20px; font-size: 11px; font-weight: 600;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.badge-ok <span class="Apple-converted-space">    </span>{ background: #e8f5e9; color: #2e7d32; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.badge-warn <span class="Apple-converted-space">  </span>{ background: #fff3e0; color: #e65100; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.badge-danger { background: #fce4ec; color: #c62828; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.del-btn {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: none; border: none;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 22px; cursor: pointer; padding: 4px; opacity: 0.7;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.del-btn:active { opacity: 1; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.form { display: flex; flex-direction: column; gap: 10px; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>label { font-size: 13px; color: gray; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>input {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: 11px; border-radius: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border: 1.5px solid var(--tg-theme-hint-color, #ddd);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 14px; width: 100%;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: var(--tg-theme-secondary-bg-color, #f8f8f8);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: var(--tg-theme-text-color, #000);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>outline: none;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>input:focus { border-color: var(--tg-theme-button-color, #2481cc); }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.btn-add {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: 13px; border: none; border-radius: 13px; width: 100%;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: var(--tg-theme-button-color, #2481cc);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: var(--tg-theme-button-text-color, #fff);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 15px; font-weight: 600; cursor: pointer;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.btn-add:active { opacity: 0.85; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>#status {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>text-align: center; font-size: 13px; height: 22px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: var(--tg-theme-button-color, #2481cc);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 6px; transition: opacity 0.3s;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.counter {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: inline-block;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: var(--tg-theme-button-color, #2481cc);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #fff; border-radius: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: 0 6px; font-size: 11px; margin-left: 4px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.tab.active .counter { background: rgba(255,255,255,0.35); color: #fff; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.section-title { font-size: 12px; color: gray; margin-bottom: 8px; padding-left: 2px; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.empty { text-align: center; color: gray; padding: 40px 20px; font-size: 14px; line-height: 2; }</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;h1&gt;🧊 Мой холодильник&lt;/h1&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;div class="tabs"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;button class="tab active" onclick="showTab('list')" <span class="Apple-converted-space">  </span>id="tab-btn-list"&gt;📋 Список&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;button class="tab"<span class="Apple-converted-space">        </span>onclick="showTab('add')"<span class="Apple-converted-space">    </span>id="tab-btn-add"&gt;➕ Добавить&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;button class="tab"<span class="Apple-converted-space">        </span>onclick="showTab('expire')" id="tab-btn-expire"&gt;⚠️ Истекает&lt;/button&gt;</p>
-<p class="p1">&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;div id="status"&gt;&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;div id="tab-list"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="items-list"&gt;&lt;div class="empty"&gt;⏳ Загрузка...&lt;/div&gt;&lt;/div&gt;</p>
-<p class="p1">&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;div id="tab-add" style="display:none"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="form"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;label&gt;Название продукта&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;input id="inp-name" type="text" placeholder="Например: Молоко, Яйца, Кефир..."/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;label&gt;Годен до (необязательно)&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;input id="inp-expiry" type="date"/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;button class="btn-add" onclick="addItem()"&gt;✅ Добавить в холодильник&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
-<p class="p1">&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;div id="tab-expire" style="display:none"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="expire-list"&gt;&lt;div class="empty"&gt;⏳ Загрузка...&lt;/div&gt;&lt;/div&gt;</p>
-<p class="p1">&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>// ⚠️ ВСТАВЬ СЮДА СВОЙ URL ИЗ APPS SCRIPT</p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>const API_URL = '<a href="https://script.google.com/macros/s/AKfycbyXylzVH9IBSQ_A4MzZb1-ZITSN_PpxRam1E6ncXmPymdje1LXwjq1dK1XuOjgKWSx9/exec"><span class="s2">https://script.google.com/macros/s/AKfycbyXylzVH9IBSQ_A4MzZb1-ZITSN_PpxRam1E6ncXmPymdje1LXwjq1dK1XuOjgKWSx9/exec</span></a>';</span></p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>const tg = window.Telegram.WebApp;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>tg.ready();</p>
-<p class="p1"><span class="Apple-converted-space">  </span>tg.expand();</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>let allItems = [];</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>async function loadItems() {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>try {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const res<span class="Apple-converted-space">  </span>= await fetch(API_URL + '?action=getAll');</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const data = await res.json();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>allItems <span class="Apple-converted-space">  </span>= data.items || [];</p>
-<p class="p1"><span class="Apple-converted-space">      </span>renderList();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>renderExpire();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>updateTabBadges();</p>
-<p class="p1"><span class="Apple-converted-space">    </span>} catch(err) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('items-list').innerHTML =</p>
-<p class="p1"><span class="Apple-converted-space">        </span>'&lt;div class="empty"&gt;❌ Ошибка загрузки&lt;br&gt;Проверь URL Apps Script&lt;/div&gt;';</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>function formatDate(raw) {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (!raw) return '';</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const d = new Date(raw);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (!isNaN(d)) return d.toLocaleDateString('ru-RU');</p>
-<p class="p1"><span class="Apple-converted-space">    </span>return raw;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>function getDaysLeft(item) {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (item.daysLeft !== '' &amp;&amp; item.daysLeft !== null &amp;&amp; !isNaN(item.daysLeft)) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>return parseInt(item.daysLeft);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (!item.expiry) return null;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const exp = new Date(item.expiry);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (isNaN(exp)) return null;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const now = new Date(); now.setHours(0,0,0,0);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>return Math.ceil((exp - now) / 86400000);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>function expiryBadge(item) {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const d = getDaysLeft(item);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (d === null) return '';</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (d &lt; 0) <span class="Apple-converted-space">  </span>return `&lt;span class="badge badge-danger"&gt;❌ Просрочено на ${-d} дн.&lt;/span&gt;`;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (d === 0) return `&lt;span class="badge badge-danger"&gt;⚠️ Истекает СЕГОДНЯ&lt;/span&gt;`;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (d &lt;= 3)<span class="Apple-converted-space">  </span>return `&lt;span class="badge badge-warn"&gt;⏳ Осталось ${d} дн.&lt;/span&gt;`;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>return <span class="Apple-converted-space">      </span>`&lt;span class="badge badge-ok"&gt;✅ Годен ещё ${d} дн.&lt;/span&gt;`;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>function cardHTML(item) {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const nameSafe<span class="Apple-converted-space">  </span>= item.name.replace(/'/g, "\\'");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const addedFmt<span class="Apple-converted-space">  </span>= formatDate(item.added);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const expiryFmt = formatDate(item.expiry);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const doneStyle = item.status === 'done' ? 'opacity:0.5;text-decoration:line-through' : '';</p>
-<p class="p1"><span class="Apple-converted-space">    </span>return `</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="card"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="card-left"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="card-name" style="${doneStyle}"&gt;${item.name}&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="card-sub"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>Добавлено: ${addedFmt}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>${expiryFmt ? ' · Годен до: ' + expiryFmt : ''}</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>${expiryBadge(item)}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="del-btn" onclick="confirmDelete(${item.rowNum}, '${nameSafe}')"&gt;🗑️&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;`;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>function renderList() {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const el = document.getElementById('items-list');</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (!allItems.length) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>el.innerHTML = '&lt;div class="empty"&gt;🧊 Холодильник пуст&lt;br&gt;Перейди на вкладку ➕ Добавить&lt;/div&gt;';</p>
-<p class="p1"><span class="Apple-converted-space">      </span>return;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const sorted = [...allItems].sort((a, b) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const da = getDaysLeft(a) ?? 9999;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const db = getDaysLeft(b) ?? 9999;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>return da - db;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p1"><span class="Apple-converted-space">    </span>el.innerHTML =</p>
-<p class="p1"><span class="Apple-converted-space">      </span>`&lt;div class="section-title"&gt;Позиций в холодильнике: ${allItems.length}&lt;/div&gt;` +</p>
-<p class="p1"><span class="Apple-converted-space">      </span>sorted.map(cardHTML).join('');</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>function renderExpire() {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const el<span class="Apple-converted-space">  </span>= document.getElementById('expire-list');</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const exp = allItems.filter(i =&gt; { const d = getDaysLeft(i); return d !== null &amp;&amp; d &lt;= 3; });</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (!exp.length) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>el.innerHTML = '&lt;div class="empty"&gt;✅ Все продукты свежие!&lt;br&gt;&lt;br&gt;Здесь появятся продукты,&lt;br&gt;у которых срок годности&lt;br&gt;меньше 3 дней&lt;/div&gt;';</p>
-<p class="p1"><span class="Apple-converted-space">      </span>return;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>el.innerHTML =</p>
-<p class="p1"><span class="Apple-converted-space">      </span>`&lt;div class="section-title"&gt;⚠️ Требуют внимания: ${exp.length}&lt;/div&gt;` +</p>
-<p class="p1"><span class="Apple-converted-space">      </span>exp.map(cardHTML).join('');</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>function updateTabBadges() {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const expCount = allItems.filter(i =&gt; { const d = getDaysLeft(i); return d !== null &amp;&amp; d &lt;= 3; }).length;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('tab-btn-list').innerHTML =</p>
-<p class="p1"><span class="Apple-converted-space">      </span>`📋 Список&lt;span class="counter"&gt;${allItems.length}&lt;/span&gt;`;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('tab-btn-expire').innerHTML =</p>
-<p class="p1"><span class="Apple-converted-space">      </span>`⚠️ Истекает` + (expCount ? `&lt;span class="counter"&gt;${expCount}&lt;/span&gt;` : '');</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>async function addItem() {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const name<span class="Apple-converted-space">      </span>= document.getElementById('inp-name').value.trim();</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const expiryRaw = document.getElementById('inp-expiry').value;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (!name) { tg.showAlert('⚠️ Введи название продукта'); return; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let expiry = '';</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (expiryRaw) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const d = new Date(expiryRaw);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>expiry = d.toLocaleDateString('ru-RU');</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>showStatus('Добавляю...');</p>
-<p class="p1"><span class="Apple-converted-space">    </span>try {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>await fetch(API_URL, {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>method: 'POST',</p>
-<p class="p1"><span class="Apple-converted-space">        </span>headers: { 'Content-Type': 'application/json' },</p>
-<p class="p1"><span class="Apple-converted-space">        </span>body: JSON.stringify({ action: 'add', name, expiry })</p>
-<p class="p1"><span class="Apple-converted-space">      </span>});</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('inp-name').value <span class="Apple-converted-space">  </span>= '';</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('inp-expiry').value = '';</p>
-<p class="p1"><span class="Apple-converted-space">      </span>showStatus('✅ ' + name + ' добавлен!');</p>
-<p class="p1"><span class="Apple-converted-space">      </span>await loadItems();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>showTab('list');</p>
-<p class="p1"><span class="Apple-converted-space">    </span>} catch(err) { tg.showAlert('❌ Ошибка при добавлении'); }</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>function confirmDelete(rowNum, name) {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>tg.showConfirm(`Удалить «${name}» из холодильника?`, async (ok) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (!ok) return;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>showStatus('Удаляю...');</p>
-<p class="p1"><span class="Apple-converted-space">      </span>try {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>await fetch(API_URL, {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>method: 'POST',</p>
-<p class="p1"><span class="Apple-converted-space">          </span>headers: { 'Content-Type': 'application/json' },</p>
-<p class="p1"><span class="Apple-converted-space">          </span>body: JSON.stringify({ action: 'delete', rowNum })</p>
-<p class="p1"><span class="Apple-converted-space">        </span>});</p>
-<p class="p1"><span class="Apple-converted-space">        </span>showStatus('🗑️ ' + name + ' удалён');</p>
-<p class="p1"><span class="Apple-converted-space">        </span>await loadItems();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>} catch(err) { tg.showAlert('❌ Ошибка при удалении'); }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>function showTab(tab) {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>['list', 'add', 'expire'].forEach(t =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('tab-' + t).style.display = (t === tab) ? 'block' : 'none';</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.querySelectorAll('.tab').forEach((el, i) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>el.classList.toggle('active', ['list','add','expire'][i] === tab);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>function showStatus(msg) {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const el = document.getElementById('status');</p>
-<p class="p1"><span class="Apple-converted-space">    </span>el.textContent <span class="Apple-converted-space">  </span>= msg;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>el.style.opacity = '1';</p>
-<p class="p1"><span class="Apple-converted-space">    </span>clearTimeout(el._t);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>el._t = setTimeout(() =&gt; { el.style.opacity = '0'; }, 2500);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>loadItems();</p>
-<p class="p1">&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+
+<h1>🧊 Мой холодильник</h1>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('list')"   id="tab-btn-list">📋 Список</button>
+  <button class="tab"        onclick="showTab('add')"    id="tab-btn-add">➕ Добавить</button>
+  <button class="tab"        onclick="showTab('expire')" id="tab-btn-expire">⚠️ Истекает</button>
+</div>
+
+<div id="status"></div>
+
+<div id="tab-list">
+  <div id="items-list"><div class="empty">⏳ Загрузка...</div></div>
+</div>
+
+<div id="tab-add" style="display:none">
+  <div class="form">
+    <label>Название продукта</label>
+    <input id="inp-name" type="text" placeholder="Например: Молоко, Яйца, Кефир..."/>
+    <label>Годен до (необязательно)</label>
+    <input id="inp-expiry" type="date"/>
+    <button class="btn-add" onclick="addItem()">✅ Добавить в холодильник</button>
+  </div>
+</div>
+
+<div id="tab-expire" style="display:none">
+  <div id="expire-list"><div class="empty">⏳ Загрузка...</div></div>
+</div>
+
+<script>
+  // ⚠️ ВСТАВЬ СЮДА СВОЙ URL ИЗ APPS SCRIPT
+  const API_URL = 'https://script.google.com/macros/s/AKfycbyXylzVH9IBSQ_A4MzZb1-ZITSN_PpxRam1E6ncXmPymdje1LXwjq1dK1XuOjgKWSx9/exec';
+
+  const tg = window.Telegram.WebApp;
+  tg.ready();
+  tg.expand();
+
+  let allItems = [];
+
+  async function loadItems() {
+    try {
+      const res  = await fetch(API_URL + '?action=getAll');
+      const data = await res.json();
+      allItems   = data.items || [];
+      renderList();
+      renderExpire();
+      updateTabBadges();
+    } catch(err) {
+      document.getElementById('items-list').innerHTML =
+        '<div class="empty">❌ Ошибка загрузки<br>Проверь URL Apps Script</div>';
+    }
+  }
+
+  function formatDate(raw) {
+    if (!raw) return '';
+    const d = new Date(raw);
+    if (!isNaN(d)) return d.toLocaleDateString('ru-RU');
+    return raw;
+  }
+
+  function getDaysLeft(item) {
+    if (item.daysLeft !== '' && item.daysLeft !== null && !isNaN(item.daysLeft)) {
+      return parseInt(item.daysLeft);
+    }
+    if (!item.expiry) return null;
+    const exp = new Date(item.expiry);
+    if (isNaN(exp)) return null;
+    const now = new Date(); now.setHours(0,0,0,0);
+    return Math.ceil((exp - now) / 86400000);
+  }
+
+  function expiryBadge(item) {
+    const d = getDaysLeft(item);
+    if (d === null) return '';
+    if (d < 0)   return `<span class="badge badge-danger">❌ Просрочено на ${-d} дн.</span>`;
+    if (d === 0) return `<span class="badge badge-danger">⚠️ Истекает СЕГОДНЯ</span>`;
+    if (d <= 3)  return `<span class="badge badge-warn">⏳ Осталось ${d} дн.</span>`;
+    return       `<span class="badge badge-ok">✅ Годен ещё ${d} дн.</span>`;
+  }
+
+  function cardHTML(item) {
+    const nameSafe  = item.name.replace(/'/g, "\\'");
+    const addedFmt  = formatDate(item.added);
+    const expiryFmt = formatDate(item.expiry);
+    const doneStyle = item.status === 'done' ? 'opacity:0.5;text-decoration:line-through' : '';
+    return `
+      <div class="card">
+        <div class="card-left">
+          <div class="card-name" style="${doneStyle}">${item.name}</div>
+          <div class="card-sub">
+            Добавлено: ${addedFmt}
+            ${expiryFmt ? ' · Годен до: ' + expiryFmt : ''}
+          </div>
+          ${expiryBadge(item)}
+        </div>
+        <button class="del-btn" onclick="confirmDelete(${item.rowNum}, '${nameSafe}')">🗑️</button>
+      </div>`;
+  }
+
+  function renderList() {
+    const el = document.getElementById('items-list');
+    if (!allItems.length) {
+      el.innerHTML = '<div class="empty">🧊 Холодильник пуст<br>Перейди на вкладку ➕ Добавить</div>';
+      return;
+    }
+    const sorted = [...allItems].sort((a, b) => {
+      const da = getDaysLeft(a) ?? 9999;
+      const db = getDaysLeft(b) ?? 9999;
+      return da - db;
+    });
+    el.innerHTML =
+      `<div class="section-title">Позиций в холодильнике: ${allItems.length}</div>` +
+      sorted.map(cardHTML).join('');
+  }
+
+  function renderExpire() {
+    const el  = document.getElementById('expire-list');
+    const exp = allItems.filter(i => { const d = getDaysLeft(i); return d !== null && d <= 3; });
+    if (!exp.length) {
+      el.innerHTML = '<div class="empty">✅ Все продукты свежие!<br><br>Здесь появятся продукты,<br>у которых срок годности<br>меньше 3 дней</div>';
+      return;
+    }
+    el.innerHTML =
+      `<div class="section-title">⚠️ Требуют внимания: ${exp.length}</div>` +
+      exp.map(cardHTML).join('');
+  }
+
+  function updateTabBadges() {
+    const expCount = allItems.filter(i => { const d = getDaysLeft(i); return d !== null && d <= 3; }).length;
+    document.getElementById('tab-btn-list').innerHTML =
+      `📋 Список<span class="counter">${allItems.length}</span>`;
+    document.getElementById('tab-btn-expire').innerHTML =
+      `⚠️ Истекает` + (expCount ? `<span class="counter">${expCount}</span>` : '');
+  }
+
+  async function addItem() {
+    const name      = document.getElementById('inp-name').value.trim();
+    const expiryRaw = document.getElementById('inp-expiry').value;
+    if (!name) { tg.showAlert('⚠️ Введи название продукта'); return; }
+    let expiry = '';
+    if (expiryRaw) {
+      const d = new Date(expiryRaw);
+      expiry = d.toLocaleDateString('ru-RU');
+    }
+    showStatus('Добавляю...');
+    try {
+      await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'add', name, expiry })
+      });
+      document.getElementById('inp-name').value   = '';
+      document.getElementById('inp-expiry').value = '';
+      showStatus('✅ ' + name + ' добавлен!');
+      await loadItems();
+      showTab('list');
+    } catch(err) { tg.showAlert('❌ Ошибка при добавлении'); }
+  }
+
+  function confirmDelete(rowNum, name) {
+    tg.showConfirm(`Удалить «${name}» из холодильника?`, async (ok) => {
+      if (!ok) return;
+      showStatus('Удаляю...');
+      try {
+        await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'delete', rowNum })
+        });
+        showStatus('🗑️ ' + name + ' удалён');
+        await loadItems();
+      } catch(err) { tg.showAlert('❌ Ошибка при удалении'); }
+    });
+  }
+
+  function showTab(tab) {
+    ['list', 'add', 'expire'].forEach(t => {
+      document.getElementById('tab-' + t).style.display = (t === tab) ? 'block' : 'none';
+    });
+    document.querySelectorAll('.tab').forEach((el, i) => {
+      el.classList.toggle('active', ['list','add','expire'][i] === tab);
+    });
+  }
+
+  function showStatus(msg) {
+    const el = document.getElementById('status');
+    el.textContent   = msg;
+    el.style.opacity = '1';
+    clearTimeout(el._t);
+    el._t = setTimeout(() => { el.style.opacity = '0'; }, 2500);
+  }
+
+  loadItems();
+</script>
 </body>
 </html>
