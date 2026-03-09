@@ -2,82 +2,108 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <title>🧊 Мой холодильник</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--tg-theme-bg-color, #ffffff);
-      color: var(--tg-theme-text-color, #000000);
+      background: var(--tg-theme-bg-color, #111827);
+      color: var(--tg-theme-text-color, #F9FAFB);
       padding: 12px;
       min-height: 100vh;
     }
     h1 { font-size: 20px; margin-bottom: 14px; }
+
     .tabs { display: flex; gap: 8px; margin-bottom: 14px; }
     .tab {
-      flex: 1; padding: 9px 4px; border: none; border-radius: 10px;
-      background: var(--tg-theme-secondary-bg-color, #f0f0f0);
-      color: var(--tg-theme-text-color, #000);
-      cursor: pointer; font-size: 12px; font-weight: 500;
+      flex: 1; padding: 9px 4px; border: none; border-radius: 12px;
+      background: #1F2933;
+      color: #E5E7EB;
+      cursor: pointer; font-size: 13px; font-weight: 500;
     }
     .tab.active {
-      background: var(--tg-theme-button-color, #2481cc);
-      color: var(--tg-theme-button-text-color, #fff);
+      background: #2563EB;
+      color: #FFFFFF;
     }
+
     .card {
       display: flex; justify-content: space-between; align-items: center;
-      background: var(--tg-theme-secondary-bg-color, #f8f8f8);
-      border-radius: 14px; padding: 13px; margin-bottom: 10px;
+      background: #111827;
+      border-radius: 16px; padding: 13px 14px; margin-bottom: 10px;
+      border: 1px solid #1F2933;
     }
     .card-left { flex: 1; }
     .card-name { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
-    .card-sub  { font-size: 12px; color: gray; margin-bottom: 5px; }
+    .card-sub  { font-size: 12px; color: #9CA3AF; margin-bottom: 6px; }
+
     .badge {
-      display: inline-block; padding: 3px 9px;
-      border-radius: 20px; font-size: 11px; font-weight: 600;
+      display: inline-block; padding: 4px 9px;
+      border-radius: 999px; font-size: 11px; font-weight: 600;
     }
-    .badge-ok     { background: #e8f5e9; color: #2e7d32; }
-    .badge-warn   { background: #fff3e0; color: #e65100; }
-    .badge-danger { background: #fce4ec; color: #c62828; }
+    .badge-ok     { background: #064E3B; color: #A7F3D0; }
+    .badge-warn   { background: #92400E; color: #FED7AA; }
+    .badge-danger { background: #7F1D1D; color: #FECACA; }
+
     .del-btn {
       background: none; border: none;
-      font-size: 22px; cursor: pointer; padding: 4px; opacity: 0.7;
+      font-size: 22px; cursor: pointer; padding: 4px; opacity: 0.8;
+      color: #6B7280;
     }
     .del-btn:active { opacity: 1; }
-    .form { display: flex; flex-direction: column; gap: 10px; }
-    label { font-size: 13px; color: gray; }
-    input {
-      padding: 11px; border-radius: 10px;
-      border: 1.5px solid var(--tg-theme-hint-color, #ddd);
-      font-size: 14px; width: 100%;
-      background: var(--tg-theme-secondary-bg-color, #f8f8f8);
-      color: var(--tg-theme-text-color, #000);
-      outline: none;
+
+    .form { display: flex; flex-direction: column; gap: 12px; }
+
+    .field {
+      display: flex; flex-direction: column; gap: 6px;
+      background: #111827;
+      border-radius: 14px;
+      padding: 10px 12px 12px 12px;
+      border: 1px solid #1F2933;
     }
-    input:focus { border-color: var(--tg-theme-button-color, #2481cc); }
+    .field-label {
+      font-size: 12px; color: #9CA3AF;
+    }
+    .field-input-row {
+      display: flex; align-items: center;
+    }
+    input[type="text"], input[type="date"] {
+      border: none; outline: none;
+      background: transparent;
+      color: #F9FAFB;
+      font-size: 15px;
+      width: 100%;
+    }
+    input::placeholder { color: #6B7280; }
+
     .btn-add {
-      padding: 13px; border: none; border-radius: 13px; width: 100%;
-      background: var(--tg-theme-button-color, #2481cc);
-      color: var(--tg-theme-button-text-color, #fff);
+      margin-top: 6px;
+      padding: 13px; border: none; border-radius: 16px; width: 100%;
+      background: #2563EB;
+      color: #FFFFFF;
       font-size: 15px; font-weight: 600; cursor: pointer;
     }
-    .btn-add:active { opacity: 0.85; }
+    .btn-add:active { opacity: 0.9; }
+
     #status {
-      text-align: center; font-size: 13px; height: 22px;
-      color: var(--tg-theme-button-color, #2481cc);
+      text-align: center; font-size: 13px; min-height: 20px;
+      color: #93C5FD;
       margin-bottom: 6px; transition: opacity 0.3s;
     }
+
     .counter {
-      display: inline-block;
-      background: var(--tg-theme-button-color, #2481cc);
-      color: #fff; border-radius: 20px;
-      padding: 0 6px; font-size: 11px; margin-left: 4px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: rgba(15,118,110,0.12);
+      color: #A7F3D0; border-radius: 999px;
+      padding: 0 7px; font-size: 11px; margin-left: 6px; min-width: 20px;
     }
-    .tab.active .counter { background: rgba(255,255,255,0.35); color: #fff; }
-    .section-title { font-size: 12px; color: gray; margin-bottom: 8px; padding-left: 2px; }
-    .empty { text-align: center; color: gray; padding: 40px 20px; font-size: 14px; line-height: 2; }
+    .tab.active .counter {
+      background: rgba(15,23,42,0.35); color: #E5E7EB;
+    }
+
+    .section-title { font-size: 12px; color: #9CA3AF; margin-bottom: 8px; padding-left: 2px; }
+    .empty { text-align: center; color: #9CA3AF; padding: 40px 20px; font-size: 14px; line-height: 1.8; }
   </style>
 </head>
 <body>
@@ -98,10 +124,20 @@
 
 <div id="tab-add" style="display:none">
   <div class="form">
-    <label>Название продукта</label>
-    <input id="inp-name" type="text" placeholder="Например: Молоко, Яйца, Кефир..."/>
-    <label>Годен до (необязательно)</label>
-    <input id="inp-expiry" type="date"/>
+    <div class="field">
+      <div class="field-label">Название продукта</div>
+      <div class="field-input-row">
+        <input id="inp-name" type="text" placeholder="Например: Молоко, Яйца, Кекс"/>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-label">Годен до (необязательно)</div>
+      <div class="field-input-row">
+        <input id="inp-expiry" type="date"/>
+      </div>
+    </div>
+
     <button class="btn-add" onclick="addItem()">✅ Добавить в холодильник</button>
   </div>
 </div>
@@ -111,7 +147,7 @@
 </div>
 
 <script>
-  // ⚠️ ЗДЕСЬ ВСТАВЬ СВОЙ URL ИЗ APPS SCRIPT
+  // ⚠️ ВСТАВЬ СЮДА СВОЙ URL ИЗ APPS SCRIPT
   const API_URL = 'https://script.google.com/macros/s/AKfycbyXylzVH9IBSQ_A4MzZb1-ZITSN_PpxRam1E6ncXmPymdje1LXwjq1dK1XuOjgKWSx9/exec';
 
   const tg = window.Telegram.WebApp;
@@ -215,7 +251,7 @@
       `⚠️ Истекает` + (expCount ? `<span class="counter">${expCount}</span>` : '');
   }
 
-  // Добавление через GET — без POST, чтобы не ловить CORS
+  // Добавление через GET
   async function addItem() {
     const name      = document.getElementById('inp-name').value.trim();
     const expiryRaw = document.getElementById('inp-expiry').value;
@@ -223,7 +259,7 @@
 
     let expiry = '';
     if (expiryRaw) {
-      expiry = new Date(expiryRaw).toLocaleDateString('ru-RU'); // dd.MM.yyyy
+      expiry = new Date(expiryRaw).toLocaleDateString('ru-RU');
     }
 
     const url = new URL(API_URL);
