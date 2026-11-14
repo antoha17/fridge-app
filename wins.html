@@ -27,7 +27,7 @@
     padding:calc(env(safe-area-inset-top) + 20px) 16px calc(env(safe-area-inset-bottom) + 120px);
     max-width:640px;margin:0 auto;
   }
-  header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  header{display:flex;justify-content:space-between;align-items:center;gap:12px}
   h1{font-size:32px;font-weight:800;letter-spacing:-.5px}
   .sub{color:var(--muted);font-size:15px;margin-top:6px}
   .menu-btn{
@@ -169,7 +169,6 @@
 <header>
   <div>
     <h1>Мои победы ✨</h1>
-    <p class="sub">Маленькие факты о том, что у меня получается</p>
   </div>
   <div class="head-btns">
     <button class="menu-btn" id="searchBtn" aria-label="Поиск" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button>
@@ -291,7 +290,7 @@
   // Self-update: a Home Screen app on iOS keeps the old page in cache and often just resumes it.
   // On launch and whenever the app comes back to the foreground, fetch the page bypassing the cache;
   // if a newer version is published, reload into it. Records live in localStorage and are not affected.
-  const APP_VERSION = '9';
+  const APP_VERSION = '10';
   async function checkUpdate() {
     if (location.protocol === 'file:' || document.querySelector('.backdrop.open')) return;
     try {
