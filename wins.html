@@ -240,6 +240,25 @@
   // ask the browser not to evict data (helps on iOS when added to Home Screen)
   if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
 
+  // Self-update: a Home Screen app on iOS keeps the old page in cache and often just resumes it.
+  // On launch and whenever the app comes back to the foreground, fetch the page bypassing the cache;
+  // if a newer version is published, reload into it. Records live in localStorage and are not affected.
+  const APP_VERSION = '8';
+  async function checkUpdate() {
+    if (location.protocol === 'file:' || document.querySelector('.backdrop.open')) return;
+    try {
+      const r = await fetch(location.pathname, { cache: 'reload' });
+      if (!r.ok) return;
+      const m = (await r.text()).match(/const APP_VERSION = '([^']+)'/);
+      if (!m || m[1] === APP_VERSION) return;
+      let tries = 0;
+      try { tries = +sessionStorage.getItem('upd-' + m[1]) || 0; sessionStorage.setItem('upd-' + m[1], tries + 1); } catch {}
+      if (tries < 2) location.reload();
+    } catch {}
+  }
+  checkUpdate();
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkUpdate(); });
+
   const pad = n => String(n).padStart(2, '0');
   const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   const today = () => iso(new Date());
