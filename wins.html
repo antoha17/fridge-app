@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Победы">
+<meta name="theme-color" content="#17130f">
+<title>Мои победы</title>
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%2317130f'/%3E%3Ctext x='90' y='120' font-size='100' text-anchor='middle'%3E%E2%9C%A8%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#17130f; --card:#211c17; --line:#3a322a; --text:#f3ece4; --muted:#a69a8d;
+    --accent:#e07a3c; --accent-soft:#3a281b; --chip-on:#f3ece4; --chip-on-text:#17130f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{background:var(--bg)}
+  body{
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+    min-height:100vh;
+    padding:calc(env(safe-area-inset-top) + 20px) 16px calc(env(safe-area-inset-bottom) + 120px);
+    max-width:640px;margin:0 auto;
+  }
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  h1{font-size:32px;font-weight:800;letter-spacing:-.5px}
+  .sub{color:var(--muted);font-size:15px;margin-top:6px}
+  .menu-btn{
+    flex:none;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);
+    background:var(--card);color:var(--text);font-size:20px;line-height:1;cursor:pointer
+  }
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 8px;text-align:center}
+  .stat b{display:block;font-size:28px;font-weight:700}
+  .stat span{color:var(--muted);font-size:13px}
+  .tip{background:var(--accent-soft);border-radius:18px;padding:16px 18px;margin-top:18px}
+  .tip small{display:block;color:var(--muted);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
+  .tip p{font-size:16px;line-height:1.4}
+  .chips{display:flex;gap:8px;margin-top:18px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{
+    flex:none;border:1px solid var(--line);background:transparent;color:var(--text);
+    border-radius:999px;padding:9px 16px;font-size:15px;cursor:pointer
+  }
+  .chip.on{background:var(--chip-on);color:var(--chip-on-text);border-color:var(--chip-on)}
+  #list{margin-top:18px;display:flex;flex-direction:column;gap:10px}
+  .day{color:var(--muted);font-size:13px;margin:10px 4px 0}
+  .win{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 14px 12px;display:flex;gap:10px}
+  .win-body{flex:1;min-width:0}
+  .win-text{font-size:16px;line-height:1.4;word-wrap:break-word;white-space:pre-wrap}
+  .win-meta{color:var(--muted);font-size:12px;margin-top:6px}
+  .win-del{flex:none;background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:2px 4px;align-self:flex-start}
+  .empty{text-align:center;color:var(--muted);font-size:16px;line-height:1.5;padding:40px 10px 10px}
+  .ghost{
+    margin-top:16px;border:1px solid var(--line);background:transparent;color:var(--text);
+    border-radius:999px;padding:10px 20px;font-size:15px;cursor:pointer
+  }
+  .note{text-align:center;color:var(--muted);font-size:13px;margin-top:36px;line-height:1.5}
+  .fab{
+    position:fixed;left:50%;transform:translateX(-50%);
+    bottom:calc(env(safe-area-inset-bottom) + 24px);
+    background:var(--accent);color:#fff;border:none;border-radius:999px;
+    padding:16px 30px;font-size:18px;font-weight:700;cursor:pointer;white-space:nowrap;
+    box-shadow:0 8px 30px rgba(224,122,60,.35)
+  }
+  /* sheets */
+  .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-end;justify-content:center;z-index:10}
+  .backdrop.open{display:flex}
+  .sheet{
+    width:100%;max-width:640px;background:var(--card);border-radius:22px 22px 0 0;
+    padding:20px 16px calc(env(safe-area-inset-bottom) + 20px);border-top:1px solid var(--line)
+  }
+  .sheet h2{font-size:20px;margin-bottom:14px}
+  textarea,input[type=date]{
+    width:100%;background:var(--bg);color:var(--text);border:1px solid var(--line);
+    border-radius:14px;padding:12px;font-size:16px;font-family:inherit
+  }
+  textarea{min-height:96px;resize:vertical}
+  input[type=date]{margin-top:12px;color-scheme:dark}
+  .sheet .chips{margin-top:12px}
+  .row{display:flex;gap:10px;margin-top:16px}
+  .row button{flex:1;border-radius:14px;padding:14px;font-size:16px;font-weight:600;border:none;cursor:pointer}
+  .btn-main{background:var(--accent);color:#fff}
+  .btn-sec{background:transparent;color:var(--text);border:1px solid var(--line)!important}
+  .menu-item{
+    display:block;width:100%;text-align:left;background:transparent;color:var(--text);
+    border:none;border-bottom:1px solid var(--line);padding:15px 4px;font-size:16px;cursor:pointer
+  }
+  .menu-item:last-of-type{border-bottom:none}
+  .menu-item.danger{color:#f08a7a}
+  .menu-hint{color:var(--muted);font-size:13px;line-height:1.5;margin-top:10px}
+  #toast{
+    position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 16px);transform:translateX(-50%);
+    background:var(--chip-on);color:var(--chip-on-text);padding:10px 18px;border-radius:999px;
+    font-size:14px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:20
+  }
+  #toast.show{opacity:1}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Мои победы ✨</h1>
+    <p class="sub">Маленькие факты о том, что у меня получается</p>
+  </div>
+  <button class="menu-btn" id="menuBtn" aria-label="Меню">⋯</button>
+</header>
+
+<section class="stats">
+  <div class="stat"><b id="sTotal">0</b><span>всего</span></div>
+  <div class="stat"><b id="sWeek">0</b><span>за 7 дней</span></div>
+  <div class="stat"><b id="sStreak">0</b><span>дней подряд</span></div>
+</section>
+
+<div class="tip"><small>На сегодня</small><p id="tip"></p></div>
+
+<nav class="chips" id="filters"></nav>
+<div id="list"></div>
+
+<p class="note">🔒 Записи хранятся только в этом браузере на этом устройстве.<br>Никуда не отправляются. Делайте резервную копию через меню ⋯</p>
+
+<button class="fab" id="addBtn">+ Записать победу</button>
+
+<!-- add sheet -->
+<div class="backdrop" id="addSheet">
+  <div class="sheet">
+    <h2>Новая победа</h2>
+    <textarea id="wText" placeholder="Что получилось? Даже маленькое считается" maxlength="1000"></textarea>
+    <nav class="chips" id="catPick"></nav>
+    <input type="date" id="wDate">
+    <div class="row">
+      <button class="btn-sec" data-close>Отмена</button>
+      <button class="btn-main" id="saveBtn">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- menu sheet -->
+<div class="backdrop" id="menuSheet">
+  <div class="sheet">
+    <h2>Данные</h2>
+    <button class="menu-item" id="exportBtn">⬇️ Сохранить резервную копию (файл)</button>
+    <button class="menu-item" id="importBtn">⬆️ Восстановить из файла</button>
+    <button class="menu-item danger" id="wipeBtn">🗑 Удалить все записи</button>
+    <p class="menu-hint">Резервная копия — обычный файл .json. Его можно сохранить в «Файлы» на телефоне. Восстановление добавит записи из файла к текущим, без дублей.</p>
+    <div class="row"><button class="btn-sec" data-close>Закрыть</button></div>
+    <input type="file" id="fileIn" accept=".json,application/json" hidden>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(() => {
+  const KEY = 'my-wins-v1';
+  const CATS = ['Работа', 'Учёба', 'Дом', 'Я сама'];
+  const TIPS = [
+    'Маленький шаг — тоже шаг. Записывайте и его.',
+    'Вы сделали больше, чем помните. Запишите одно.',
+    'Отдых — тоже достижение.',
+    'Не «ничего не сделала», а «сделала то, на что были силы».',
+    'Сравнивайте себя только с собой вчерашней.',
+    'Довести до конца — уже победа, даже если неидеально.',
+    'Попросить о помощи — смелый поступок.',
+    'Сказать «нет» лишнему — тоже результат.'
+  ];
+  const $ = id => document.getElementById(id);
+  let wins = load();
+  let filter = 'Все';
+  let pickCat = CATS[0];
+
+  function load() {
+    try { const a = JSON.parse(localStorage.getItem(KEY)); return Array.isArray(a) ? a : []; }
+    catch { return []; }
+  }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(wins)); }
+    catch { toast('Не удалось сохранить — проверьте, не приватный ли режим'); }
+  }
+  // ask the browser not to evict data (helps on iOS when added to Home Screen)
+  if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+
+  const pad = n => String(n).padStart(2, '0');
+  const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const today = () => iso(new Date());
+  const shift = (s, days) => { const d = new Date(s + 'T12:00'); d.setDate(d.getDate() + days); return iso(d); };
+  const human = s => {
+    if (s === today()) return 'Сегодня';
+    if (s === shift(today(), -1)) return 'Вчера';
+    return new Date(s + 'T12:00').toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: s.slice(0,4) === today().slice(0,4) ? undefined : 'numeric' });
+  };
+  const esc = s => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  function toast(msg) {
+    const t = $('toast'); t.textContent = msg; t.classList.add('show');
+    clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  function stats() {
+    $('sTotal').textContent = wins.length;
+    const from = shift(today(), -6);
+    $('sWeek').textContent = wins.filter(w => w.date >= from && w.date <= today()).length;
+    const days = new Set(wins.map(w => w.date));
+    let d = days.has(today()) ? today() : shift(today(), -1), n = 0;
+    while (days.has(d)) { n++; d = shift(d, -1); }
+    $('sStreak').textContent = n;
+  }
+
+  function chips(el, items, active, onPick) {
+    el.innerHTML = items.map(c => `<button class="chip${c === active ? ' on' : ''}" data-c="${esc(c)}">${esc(c)}</button>`).join('');
+    el.onclick = e => { const b = e.target.closest('.chip'); if (b) onPick(b.dataset.c); };
+  }
+
+  function render() {
+    stats();
+    chips($('filters'), ['Все', ...CATS], filter, c => { filter = c; render(); });
+    const shown = wins
+      .filter(w => filter === 'Все' || w.cat === filter)
+      .sort((a, b) => b.date.localeCompare(a.date) || b.created - a.created);
+    const list = $('list');
+    if (!shown.length) {
+      list.innerHTML = wins.length
+        ? `<p class="empty">В категории «${esc(filter)}» пока пусто.</p>`
+        : `<div class="empty">Здесь будут ваши победы.<br>Начните с того, что уже сделали.<br><button class="ghost" id="firstBtn">Записать первую</button></div>`;
+      const fb = $('firstBtn'); if (fb) fb.onclick = openAdd;
+      return;
+    }
+    let html = '', last = '';
+    for (const w of shown) {
+      if (w.date !== last) { html += `<p class="day">${human(w.date)}</p>`; last = w.date; }
+      html += `<div class="win"><div class="win-body"><p class="win-text">${esc(w.text)}</p><p class="win-meta">${esc(w.cat)}</p></div><button class="win-del" data-id="${w.id}" aria-label="Удалить">✕</button></div>`;
+    }
+    list.innerHTML = html;
+  }
+
+  $('list').addEventListener('click', e => {
+    const b = e.target.closest('.win-del'); if (!b) return;
+    if (!confirm('Удалить эту запись?')) return;
+    wins = wins.filter(w => w.id !== b.dataset.id); save(); render();
+  });
+
+  // sheets
+  const open = id => $(id).classList.add('open');
+  const close = id => $(id).classList.remove('open');
+  document.querySelectorAll('.backdrop').forEach(bd => {
+    bd.addEventListener('click', e => { if (e.target === bd || e.target.hasAttribute('data-close')) bd.classList.remove('open'); });
+  });
+
+  function renderPick() { chips($('catPick'), CATS, pickCat, c => { pickCat = c; renderPick(); }); }
+  function openAdd() {
+    $('wText').value = '';
+    $('wDate').value = today(); $('wDate').max = today();
+    pickCat = filter !== 'Все' ? filter : pickCat;
+    renderPick(); open('addSheet');
+    setTimeout(() => $('wText').focus(), 50);
+  }
+  $('addBtn').onclick = openAdd;
+  $('saveBtn').onclick = () => {
+    const text = $('wText').value.trim();
+    if (!text) { toast('Напишите пару слов'); return; }
+    wins.push({
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+      text, cat: pickCat, date: $('wDate').value || today(), created: Date.now()
+    });
+    save(); close('addSheet'); render(); toast('Записано ✨');
+  };
+
+  // backup
+  $('menuBtn').onclick = () => open('menuSheet');
+  $('exportBtn').onclick = async () => {
+    const blob = new Blob([JSON.stringify({ app: 'my-wins', v: 1, exported: new Date().toISOString(), wins }, null, 2)], { type: 'application/json' });
+    const name = `pobedy-${today()}.json`;
+    const file = new File([blob], name, { type: 'application/json' });
+    try {
+      if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file] }); return; }
+    } catch (e) { if (e.name === 'AbortError') return; }
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  };
+  $('importBtn').onclick = () => $('fileIn').click();
+  $('fileIn').onchange = async e => {
+    const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+    try {
+      const data = JSON.parse(await f.text());
+      const arr = Array.isArray(data) ? data : data.wins;
+      if (!Array.isArray(arr)) throw 0;
+      const ids = new Set(wins.map(w => w.id)); let added = 0;
+      for (const w of arr) {
+        if (w && typeof w.text === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(w.date) && !ids.has(w.id)) {
+          wins.push({ id: String(w.id || Math.random().toString(36).slice(2)), text: w.text, cat: CATS.includes(w.cat) ? w.cat : CATS[3], date: w.date, created: +w.created || 0 });
+          added++;
+        }
+      }
+      save(); render(); close('menuSheet'); toast(`Добавлено записей: ${added}`);
+    } catch { toast('Не получилось прочитать файл'); }
+  };
+  $('wipeBtn').onclick = () => {
+    if (!wins.length) { toast('Записей и так нет'); return; }
+    if (!confirm('Удалить ВСЕ записи? Сначала лучше сохранить резервную копию.')) return;
+    wins = []; save(); render(); close('menuSheet'); toast('Всё удалено');
+  };
+
+  $('tip').textContent = TIPS[Math.floor(Date.now() / 864e5) % TIPS.length];
+  render();
+})();
+</script>
+</body>
+</html>
