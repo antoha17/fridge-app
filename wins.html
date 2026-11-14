@@ -19,6 +19,7 @@
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   html,body{background:var(--bg)}
+  [hidden]{display:none!important}
   body{
     color:var(--text);
     font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
@@ -33,6 +34,33 @@
     flex:none;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);
     background:var(--card);color:var(--text);font-size:20px;line-height:1;cursor:pointer
   }
+  .head-btns{flex:none;display:flex;gap:8px}
+  .menu-btn{display:grid;place-items:center}
+  .search{display:none;align-items:center;gap:10px;margin-top:18px}
+  .search.on{display:flex}
+  .search-box{flex:1;min-width:0;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:0 12px}
+  .search-box svg{flex:none;color:var(--muted)}
+  .search-box input{flex:1;min-width:0;background:none;border:none;outline:none;color:var(--text);font-size:16px;padding:12px 0;font-family:inherit}
+  .search-box input::placeholder{color:var(--muted)}
+  .search-box input::-webkit-search-cancel-button{display:none}
+  .search-clear{flex:none;background:var(--line);color:var(--card);border:none;width:20px;height:20px;border-radius:50%;font-size:12px;line-height:20px;cursor:pointer;display:none}
+  .search-clear.on{display:block}
+  .search-cancel{flex:none;background:none;border:none;color:var(--accent);font-size:16px;cursor:pointer;font-family:inherit}
+  mark{background:rgba(224,122,60,.3);color:inherit;border-radius:3px;padding:0 1px}
+  /* celebration */
+  .yay{position:fixed;inset:0;z-index:30;display:none;place-items:center;background:rgba(10,8,6,.55);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+  .yay.on{display:grid;animation:yay-bg 1.9s ease forwards}
+  .yay-in{position:relative;text-align:center}
+  .yay-star{width:96px;height:96px;margin:0 auto;animation:yay-pop .6s cubic-bezier(.2,1.6,.4,1) both}
+  .yay p{margin-top:18px;font-size:22px;font-weight:700;animation:yay-text .5s .15s ease-out both}
+  .yay i{position:absolute;left:50%;top:48px;width:8px;height:8px;margin:-4px;border-radius:50%;background:var(--accent);opacity:0;
+    animation:yay-burst .9s cubic-bezier(.1,.7,.3,1) both;animation-delay:.1s}
+  .yay i:nth-child(odd){background:#ffd2a3;width:6px;height:6px}
+  @keyframes yay-pop{from{transform:scale(0) rotate(-40deg);opacity:0}}
+  @keyframes yay-text{from{transform:translateY(10px);opacity:0}}
+  @keyframes yay-burst{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(.4)}}
+  @keyframes yay-bg{0%,80%{opacity:1}100%{opacity:0}}
+  @media (prefers-reduced-motion:reduce){.yay *,.yay.on{animation:none!important}.yay i{display:none}}
   .hero{margin-top:22px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
   .hero b{font-size:44px;font-weight:800;letter-spacing:-1px;color:var(--accent)}
   .hero span{font-size:18px;font-weight:600}
@@ -143,8 +171,20 @@
     <h1>Мои победы ✨</h1>
     <p class="sub">Маленькие факты о том, что у меня получается</p>
   </div>
-  <button class="menu-btn" id="menuBtn" aria-label="Меню">⋯</button>
+  <div class="head-btns">
+    <button class="menu-btn" id="searchBtn" aria-label="Поиск" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button>
+    <button class="menu-btn" id="menuBtn" aria-label="Меню">⋯</button>
+  </div>
 </header>
+
+<div class="search" id="search">
+  <label class="search-box">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    <input type="search" id="q" placeholder="Найти победу" autocomplete="off" enterkeyhint="search">
+    <button class="search-clear" id="qClear" type="button" aria-label="Очистить">✕</button>
+  </label>
+  <button class="search-cancel" id="qCancel" type="button">Отмена</button>
+</div>
 
 <section id="summary" hidden>
   <div class="hero"><b id="sTotal">0</b><span id="sWord">побед</span><small id="sSince"></small></div>
@@ -207,6 +247,14 @@
 
 <div id="toast"></div>
 
+<div class="yay" id="yay" aria-live="polite">
+  <div class="yay-in">
+    <svg class="yay-star" viewBox="0 0 100 100"><defs><linearGradient id="yg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb36b"/><stop offset="1" stop-color="#e07a3c"/></linearGradient></defs><path d="M50 4 C55 38 62 45 96 50 C62 55 55 62 50 96 C45 62 38 55 4 50 C38 45 45 38 50 4Z" fill="url(#yg)"/></svg>
+    <span id="yayDots"></span>
+    <p id="yayText"></p>
+  </div>
+</div>
+
 <script>
 (() => {
   const KEY = 'my-wins-v1';
@@ -243,7 +291,7 @@
   // Self-update: a Home Screen app on iOS keeps the old page in cache and often just resumes it.
   // On launch and whenever the app comes back to the foreground, fetch the page bypassing the cache;
   // if a newer version is published, reload into it. Records live in localStorage and are not affected.
-  const APP_VERSION = '8';
+  const APP_VERSION = '9';
   async function checkUpdate() {
     if (location.protocol === 'file:' || document.querySelector('.backdrop.open')) return;
     try {
@@ -314,15 +362,53 @@
     el.onclick = e => { const b = e.target.closest('.chip'); if (b) onPick(b.dataset.c); };
   }
 
+  let query = '';
+  const norm = t => t.toLowerCase().replace(/ё/g, 'е');
+  // highlight matches; norm() keeps string length, so indexes line up with the original text
+  const hl = (text, qn) => {
+    if (!qn) return esc(text);
+    const low = norm(text); let out = '', i = 0, j;
+    while ((j = low.indexOf(qn, i)) !== -1) { out += esc(text.slice(i, j)) + '<mark>' + esc(text.slice(j, j + qn.length)) + '</mark>'; i = j + qn.length; }
+    return out + esc(text.slice(i));
+  };
+  $('searchBtn').onclick = () => { $('search').classList.add('on'); $('q').focus(); };
+  $('q').oninput = () => { query = $('q').value; $('qClear').classList.toggle('on', !!query); render(); };
+  $('q').onkeydown = e => { if (e.key === 'Enter') $('q').blur(); };
+  $('qClear').onclick = () => { $('q').value = ''; $('q').oninput(); $('q').focus(); };
+  $('qCancel').onclick = () => { $('q').value = ''; query = ''; $('qClear').classList.remove('on'); $('search').classList.remove('on'); $('q').blur(); render(); };
+
+  // celebration after a new win
+  const YAY = ['Ещё одна в копилку', 'Это считается!', 'Так держать', 'Записано. Вы молодец', 'Вот это да', 'Хорошая работа'];
+  let yayT;
+  function celebrate() {
+    const el = $('yay');
+    $('yayText').textContent = YAY[Math.floor(Math.random() * YAY.length)];
+    let dots = '';
+    for (let k = 0; k < 14; k++) {
+      const a = (k / 14) * Math.PI * 2 + Math.random() * .4, r = 80 + Math.random() * 60;
+      dots += `<i style="--x:${Math.round(Math.cos(a) * r)}px;--y:${Math.round(Math.sin(a) * r)}px"></i>`;
+    }
+    $('yayDots').innerHTML = dots;
+    el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
+    clearTimeout(yayT); yayT = setTimeout(() => el.classList.remove('on'), 1900);
+  }
+  $('yay').onclick = () => { clearTimeout(yayT); $('yay').classList.remove('on'); };
+
   function render() {
     stats();
     chips($('filters'), ['Все', ...CATS], filter, c => { filter = c; render(); });
+    const qn = norm(query.trim());
+    $('searchBtn').hidden = !wins.length;
+    if (query.trim()) { $('summary').hidden = true; $('tipBox').hidden = true; }
     const shown = wins
       .filter(w => filter === 'Все' || w.cat === filter)
+      .filter(w => !qn || norm(w.text).includes(qn))
       .sort((a, b) => b.date.localeCompare(a.date) || b.created - a.created);
     const list = $('list');
     if (!shown.length) {
-      list.innerHTML = wins.length
+      list.innerHTML = qn
+        ? `<p class="empty">Ничего не нашлось по «${esc(query.trim())}».</p>`
+        : wins.length
         ? `<p class="empty">В категории «${esc(filter)}» пока пусто.</p>`
         : `<div class="empty">Здесь будут ваши победы.<br>Начните с того, что уже сделали.<br><button class="ghost" id="firstBtn">Записать первую</button></div>`;
       const fb = $('firstBtn'); if (fb) fb.onclick = openAdd;
@@ -331,7 +417,7 @@
     let html = '', last = '';
     for (const w of shown) {
       if (w.date !== last) { html += `<p class="day">${human(w.date)}</p>`; last = w.date; }
-      html += `<div class="win" data-id="${esc(w.id)}" role="button"><div class="win-body"><p class="win-text">${esc(w.text)}</p><p class="win-meta">${esc(w.cat)}</p></div></div>`;
+      html += `<div class="win" data-id="${esc(w.id)}" role="button"><div class="win-body"><p class="win-text">${hl(w.text, qn)}</p><p class="win-meta">${esc(w.cat)}</p></div></div>`;
     }
     list.innerHTML = html;
   }
@@ -404,7 +490,7 @@
       id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
       text, cat: pickCat, date: $('wDate').value || today(), created: Date.now()
     });
-    save(); close('addSheet'); render(); toast('Записано ✨');
+    save(); close('addSheet'); render(); celebrate();
   };
 
   // backup
