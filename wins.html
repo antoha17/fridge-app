@@ -94,7 +94,16 @@
     margin-top:16px;border:1px solid var(--line);background:transparent;color:var(--text);
     border-radius:999px;padding:10px 20px;font-size:15px;cursor:pointer
   }
+  /* frosted-glass strip behind the bottom button; fades in from transparent so there is no hard edge */
+  .dock{
+    position:fixed;left:0;right:0;bottom:0;z-index:4;pointer-events:none;
+    height:calc(env(safe-area-inset-bottom) + 120px);
+    background:linear-gradient(to bottom, rgba(23,19,15,0), rgba(23,19,15,.55) 45%, rgba(23,19,15,.8));
+    -webkit-backdrop-filter:blur(14px) saturate(140%);backdrop-filter:blur(14px) saturate(140%);
+    -webkit-mask-image:linear-gradient(to bottom, transparent, #000 45%);mask-image:linear-gradient(to bottom, transparent, #000 45%)
+  }
   .fab{
+    z-index:5;
     position:fixed;left:50%;transform:translateX(-50%);
     bottom:calc(env(safe-area-inset-bottom) + 24px);
     background:var(--accent);color:#fff;border:none;border-radius:999px;
@@ -198,6 +207,7 @@
 <nav class="chips" id="filters"></nav>
 <div id="list"></div>
 
+<div class="dock" aria-hidden="true"></div>
 <button class="fab" id="addBtn">+ Записать победу</button>
 
 <!-- add sheet -->
@@ -290,7 +300,7 @@
   // Self-update: a Home Screen app on iOS keeps the old page in cache and often just resumes it.
   // On launch and whenever the app comes back to the foreground, fetch the page bypassing the cache;
   // if a newer version is published, reload into it. Records live in localStorage and are not affected.
-  const APP_VERSION = '10';
+  const APP_VERSION = '11';
   async function checkUpdate() {
     if (location.protocol === 'file:' || document.querySelector('.backdrop.open')) return;
     try {
