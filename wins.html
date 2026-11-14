@@ -155,13 +155,13 @@
 <script>
 (() => {
   const KEY = 'my-wins-v1';
-  const CATS = ['Работа', 'Учёба', 'Дом', 'Я сама'];
+  const CATS = ['Работа', 'Учёба', 'Дом', 'Я сам'];
   const TIPS = [
     'Маленький шаг — тоже шаг. Записывайте и его.',
     'Вы сделали больше, чем помните. Запишите одно.',
     'Отдых — тоже достижение.',
-    'Не «ничего не сделала», а «сделала то, на что были силы».',
-    'Сравнивайте себя только с собой вчерашней.',
+    'Не «ничего не сделал», а «сделал то, на что были силы».',
+    'Сравнивайте себя только с собой вчерашним.',
     'Довести до конца — уже победа, даже если неидеально.',
     'Попросить о помощи — смелый поступок.',
     'Сказать «нет» лишнему — тоже результат.'
@@ -289,7 +289,7 @@
       const ids = new Set(wins.map(w => w.id)); let added = 0;
       for (const w of arr) {
         if (w && typeof w.text === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(w.date) && !ids.has(w.id)) {
-          wins.push({ id: String(w.id || Math.random().toString(36).slice(2)), text: w.text, cat: CATS.includes(w.cat) ? w.cat : CATS[3], date: w.date, created: +w.created || 0 });
+          wins.push({ id: String(w.id || Math.random().toString(36).slice(2)), text: w.text, cat: CATS.includes(w.cat) ? w.cat : (w.cat === 'Я сама' ? 'Я сам' : CATS[3]), date: w.date, created: +w.created || 0 });
           added++;
         }
       }
