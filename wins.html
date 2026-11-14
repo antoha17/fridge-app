@@ -75,7 +75,18 @@
   }
   /* sheets */
   .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-end;justify-content:center;z-index:10}
-  .backdrop.open{display:flex}
+  .backdrop.open{display:flex;animation:fade .2s ease-out}
+  .backdrop.open .sheet{animation:up .28s cubic-bezier(.2,.8,.2,1)}
+  .backdrop.top{align-items:flex-start}
+  .backdrop.top .sheet{
+    border-radius:0 0 22px 22px;border-top:none;border-bottom:1px solid var(--line);
+    padding-top:calc(env(safe-area-inset-top) + 18px);padding-bottom:18px
+  }
+  .backdrop.top.open .sheet{animation:down .28s cubic-bezier(.2,.8,.2,1)}
+  @keyframes fade{from{background:rgba(0,0,0,0)}}
+  @keyframes up{from{transform:translateY(100%)}}
+  @keyframes down{from{transform:translateY(-100%)}}
+  body.locked{position:fixed;left:0;right:0;overflow:hidden}
   .sheet{
     width:100%;max-width:640px;background:var(--card);border-radius:22px 22px 0 0;
     padding:20px 16px calc(env(safe-area-inset-bottom) + 20px);border-top:1px solid var(--line)
@@ -86,7 +97,12 @@
     border-radius:14px;padding:12px;font-size:16px;font-family:inherit
   }
   textarea{min-height:96px;resize:vertical}
-  input[type=date]{margin-top:12px;color-scheme:dark}
+  textarea:focus,input[type=date]:focus{outline:none;border-color:rgba(224,122,60,.7)}
+  input[type=date]{
+    display:block;margin-top:12px;color-scheme:dark;min-width:0;max-width:100%;min-height:48px;
+    -webkit-appearance:none;appearance:none;text-align:left
+  }
+  input[type=date]::-webkit-date-and-time-value{text-align:left}
   .sheet .chips{margin-top:12px}
   .row{display:flex;gap:10px;margin-top:16px}
   .row button{flex:1;border-radius:14px;padding:14px;font-size:16px;font-weight:600;border:none;cursor:pointer}
@@ -146,7 +162,7 @@
 <button class="fab" id="addBtn">+ Записать победу</button>
 
 <!-- add sheet -->
-<div class="backdrop" id="addSheet">
+<div class="backdrop top" id="addSheet">
   <div class="sheet">
     <h2 id="addTitle">Новая победа</h2>
     <textarea id="wText" placeholder="Что получилось? Даже маленькое считается" maxlength="1000"></textarea>
@@ -307,10 +323,29 @@
   });
 
   // sheets
-  const open = id => $(id).classList.add('open');
-  const close = id => $(id).classList.remove('open');
+  // lock page scroll while a sheet is open so iOS doesn't jump the page under the keyboard
+  let lockY = 0;
+  const open = id => {
+    if (!document.body.classList.contains('locked')) {
+      lockY = window.scrollY;
+      document.body.style.top = -lockY + 'px';
+      document.body.classList.add('locked');
+    }
+    $(id).classList.add('open');
+  };
+  const close = id => {
+    $(id).classList.remove('open');
+    if (!document.querySelector('.backdrop.open')) {
+      document.activeElement && document.activeElement.blur();
+      document.body.classList.remove('locked');
+      document.body.style.top = '';
+      window.scrollTo(0, lockY);
+    }
+  };
+  // focus synchronously inside the tap, so the keyboard opens together with the sheet (no second jump)
+  const focusEnd = el => { el.focus({ preventScroll: true }); const n = el.value.length; el.setSelectionRange(n, n); };
   document.querySelectorAll('.backdrop').forEach(bd => {
-    bd.addEventListener('click', e => { if (e.target === bd || e.target.hasAttribute('data-close')) bd.classList.remove('open'); });
+    bd.addEventListener('click', e => { if (e.target === bd || e.target.hasAttribute('data-close')) close(bd.id); });
   });
 
   function renderPick() { chips($('catPick'), CATS, pickCat, c => { pickCat = c; renderPick(); }); }
@@ -322,8 +357,7 @@
     $('wText').value = '';
     $('wDate').value = today(); $('wDate').max = today();
     pickCat = filter !== 'Все' ? filter : pickCat;
-    renderPick(); open('addSheet');
-    setTimeout(() => $('wText').focus(), 50);
+    renderPick(); open('addSheet'); focusEnd($('wText'));
   }
   function openEdit(w) {
     editing = w;
@@ -332,7 +366,7 @@
     $('wText').value = w.text;
     $('wDate').value = w.date; $('wDate').max = today();
     pickCat = normCat(w.cat);
-    renderPick(); open('addSheet');
+    renderPick(); open('addSheet'); focusEnd($('wText'));
   }
   $('delBtn').onclick = () => {
     if (!editing || !confirm('Удалить эту запись?')) return;
