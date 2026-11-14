@@ -1,0 +1,14 @@
+{
+  "name": "Мои победы",
+  "short_name": "Победы",
+  "id": "./wins.html",
+  "start_url": "./wins.html",
+  "display": "standalone",
+  "background_color": "#17130f",
+  "theme_color": "#17130f",
+  "lang": "ru",
+  "icons": [
+    { "src": "wins-icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "wins-icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
