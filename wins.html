@@ -33,7 +33,7 @@
     flex:none;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);
     background:var(--card);color:var(--text);font-size:20px;line-height:1;cursor:pointer
   }
-  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+  .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:22px}
   .stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 8px;text-align:center}
   .stat b{display:block;font-size:28px;font-weight:700}
   .stat span{color:var(--muted);font-size:13px}
@@ -53,13 +53,11 @@
   .win-body{flex:1;min-width:0}
   .win-text{font-size:16px;line-height:1.4;word-wrap:break-word;white-space:pre-wrap}
   .win-meta{color:var(--muted);font-size:12px;margin-top:6px}
-  .win-del{flex:none;background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:2px 4px;align-self:flex-start}
   .empty{text-align:center;color:var(--muted);font-size:16px;line-height:1.5;padding:40px 10px 10px}
   .ghost{
     margin-top:16px;border:1px solid var(--line);background:transparent;color:var(--text);
     border-radius:999px;padding:10px 20px;font-size:15px;cursor:pointer
   }
-  .note{text-align:center;color:var(--muted);font-size:13px;margin-top:36px;line-height:1.5}
   .fab{
     position:fixed;left:50%;transform:translateX(-50%);
     bottom:calc(env(safe-area-inset-bottom) + 24px);
@@ -86,13 +84,27 @@
   .row button{flex:1;border-radius:14px;padding:14px;font-size:16px;font-weight:600;border:none;cursor:pointer}
   .btn-main{background:var(--accent);color:#fff}
   .btn-sec{background:transparent;color:var(--text);border:1px solid var(--line)!important}
-  .menu-item{
-    display:block;width:100%;text-align:left;background:transparent;color:var(--text);
-    border:none;border-bottom:1px solid var(--line);padding:15px 4px;font-size:16px;cursor:pointer
+  .sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+  .sheet-head h2{margin:0}
+  .x-btn{width:34px;height:34px;border-radius:50%;border:none;background:var(--bg);color:var(--muted);display:grid;place-items:center;cursor:pointer}
+  .group{background:var(--bg);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+  .group + .group{margin-top:12px}
+  .mi{
+    display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:transparent;color:var(--text);
+    border:none;padding:14px 16px;cursor:pointer;font-family:inherit
   }
-  .menu-item:last-of-type{border-bottom:none}
-  .menu-item.danger{color:#f08a7a}
-  .menu-hint{color:var(--muted);font-size:13px;line-height:1.5;margin-top:10px}
+  .mi + .mi{border-top:1px solid var(--line)}
+  .mi:active{background:rgba(255,255,255,.04)}
+  .mi-ic{flex:none;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent)}
+  .mi-tx{flex:1;min-width:0}
+  .mi-tx b{display:block;font-size:16px;font-weight:600}
+  .mi-tx span{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+  .mi-ch{flex:none;color:var(--line)}
+  .mi.danger .mi-ic{background:rgba(240,138,122,.12);color:#f08a7a}
+  .mi.danger b{color:#f08a7a}
+  .btn-del{background:transparent;color:#f08a7a;border:1px solid rgba(240,138,122,.35)!important;flex:0 0 auto!important;padding:14px 16px!important}
+  .win{cursor:pointer}
+  .win:active{background:#272119}
   #toast{
     position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 16px);transform:translateX(-50%);
     background:var(--chip-on);color:var(--chip-on-text);padding:10px 18px;border-radius:999px;
@@ -112,8 +124,7 @@
 
 <section class="stats">
   <div class="stat"><b id="sTotal">0</b><span>всего</span></div>
-  <div class="stat"><b id="sWeek">0</b><span>за 7 дней</span></div>
-  <div class="stat"><b id="sStreak">0</b><span>дней подряд</span></div>
+  <div class="stat"><b id="sYear">0</b><span id="sYearLabel">в этом году</span></div>
 </section>
 
 <div class="tip"><small>На сегодня</small><p id="tip"></p></div>
@@ -121,18 +132,17 @@
 <nav class="chips" id="filters"></nav>
 <div id="list"></div>
 
-<p class="note">🔒 Записи хранятся только в этом браузере на этом устройстве.<br>Никуда не отправляются. Делайте резервную копию через меню ⋯</p>
-
 <button class="fab" id="addBtn">+ Записать победу</button>
 
 <!-- add sheet -->
 <div class="backdrop" id="addSheet">
   <div class="sheet">
-    <h2>Новая победа</h2>
+    <h2 id="addTitle">Новая победа</h2>
     <textarea id="wText" placeholder="Что получилось? Даже маленькое считается" maxlength="1000"></textarea>
     <nav class="chips" id="catPick"></nav>
     <input type="date" id="wDate">
     <div class="row">
+      <button class="btn-del" id="delBtn" hidden>Удалить</button>
       <button class="btn-sec" data-close>Отмена</button>
       <button class="btn-main" id="saveBtn">Сохранить</button>
     </div>
@@ -142,12 +152,28 @@
 <!-- menu sheet -->
 <div class="backdrop" id="menuSheet">
   <div class="sheet">
-    <h2>Данные</h2>
-    <button class="menu-item" id="exportBtn">⬇️ Сохранить резервную копию (файл)</button>
-    <button class="menu-item" id="importBtn">⬆️ Восстановить из файла</button>
-    <button class="menu-item danger" id="wipeBtn">🗑 Удалить все записи</button>
-    <p class="menu-hint">Резервная копия — обычный файл .json. Его можно сохранить в «Файлы» на телефоне. Восстановление добавит записи из файла к текущим, без дублей.</p>
-    <div class="row"><button class="btn-sec" data-close>Закрыть</button></div>
+    <div class="sheet-head">
+      <h2>Резервная копия</h2>
+      <button class="x-btn" data-close aria-label="Закрыть"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="pointer-events:none"><path d="M2 2l10 10M12 2L2 12"/></svg></button>
+    </div>
+    <div class="group">
+      <button class="mi" id="exportBtn">
+        <span class="mi-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></span>
+        <span class="mi-tx"><b>Сохранить копию</b><span>Все записи одним файлом</span></span>
+        <svg class="mi-ch" width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 1l6 6-6 6"/></svg>
+      </button>
+      <button class="mi" id="importBtn">
+        <span class="mi-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></span>
+        <span class="mi-tx"><b>Восстановить</b><span>Добавить записи из копии, без повторов</span></span>
+        <svg class="mi-ch" width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 1l6 6-6 6"/></svg>
+      </button>
+    </div>
+    <div class="group">
+      <button class="mi danger" id="wipeBtn">
+        <span class="mi-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></span>
+        <span class="mi-tx"><b>Удалить все записи</b><span>Без возможности вернуть</span></span>
+      </button>
+    </div>
     <input type="file" id="fileIn" accept=".json,application/json" hidden>
   </div>
 </div>
@@ -202,12 +228,9 @@
 
   function stats() {
     $('sTotal').textContent = wins.length;
-    const from = shift(today(), -6);
-    $('sWeek').textContent = wins.filter(w => w.date >= from && w.date <= today()).length;
-    const days = new Set(wins.map(w => w.date));
-    let d = days.has(today()) ? today() : shift(today(), -1), n = 0;
-    while (days.has(d)) { n++; d = shift(d, -1); }
-    $('sStreak').textContent = n;
+    const y = today().slice(0, 4);
+    $('sYear').textContent = wins.filter(w => w.date.startsWith(y)).length;
+    $('sYearLabel').textContent = `в ${y} году`;
   }
 
   function chips(el, items, active, onPick) {
@@ -232,15 +255,14 @@
     let html = '', last = '';
     for (const w of shown) {
       if (w.date !== last) { html += `<p class="day">${human(w.date)}</p>`; last = w.date; }
-      html += `<div class="win"><div class="win-body"><p class="win-text">${esc(w.text)}</p><p class="win-meta">${esc(w.cat)}</p></div><button class="win-del" data-id="${w.id}" aria-label="Удалить">✕</button></div>`;
+      html += `<div class="win" data-id="${esc(w.id)}" role="button"><div class="win-body"><p class="win-text">${esc(w.text)}</p><p class="win-meta">${esc(w.cat)}</p></div></div>`;
     }
     list.innerHTML = html;
   }
 
   $('list').addEventListener('click', e => {
-    const b = e.target.closest('.win-del'); if (!b) return;
-    if (!confirm('Удалить эту запись?')) return;
-    wins = wins.filter(w => w.id !== b.dataset.id); save(); render();
+    const card = e.target.closest('.win'); if (!card) return;
+    const w = wins.find(x => x.id === card.dataset.id); if (w) openEdit(w);
   });
 
   // sheets
@@ -251,17 +273,39 @@
   });
 
   function renderPick() { chips($('catPick'), CATS, pickCat, c => { pickCat = c; renderPick(); }); }
+  let editing = null;
   function openAdd() {
+    editing = null;
+    $('addTitle').textContent = 'Новая победа';
+    $('delBtn').hidden = true;
     $('wText').value = '';
     $('wDate').value = today(); $('wDate').max = today();
     pickCat = filter !== 'Все' ? filter : pickCat;
     renderPick(); open('addSheet');
     setTimeout(() => $('wText').focus(), 50);
   }
+  function openEdit(w) {
+    editing = w;
+    $('addTitle').textContent = 'Редактировать';
+    $('delBtn').hidden = false;
+    $('wText').value = w.text;
+    $('wDate').value = w.date; $('wDate').max = today();
+    pickCat = CATS.includes(w.cat) ? w.cat : CATS[0];
+    renderPick(); open('addSheet');
+  }
+  $('delBtn').onclick = () => {
+    if (!editing || !confirm('Удалить эту запись?')) return;
+    wins = wins.filter(w => w !== editing); save(); close('addSheet'); render(); toast('Удалено');
+  };
   $('addBtn').onclick = openAdd;
   $('saveBtn').onclick = () => {
     const text = $('wText').value.trim();
     if (!text) { toast('Напишите пару слов'); return; }
+    if (editing) {
+      Object.assign(editing, { text, cat: pickCat, date: $('wDate').value || editing.date });
+      save(); close('addSheet'); render(); toast('Сохранено');
+      return;
+    }
     wins.push({
       id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
       text, cat: pickCat, date: $('wDate').value || today(), created: Date.now()
